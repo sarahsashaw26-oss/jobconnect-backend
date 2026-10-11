@@ -26,6 +26,24 @@ const publicUserFields = (user) => ({
 const register = async (req, res) => {
   const { name, email, password, role } = req.body;
 
+  // FEATURE 1 - Required fields
+if (!name || !password || !email) {
+  return res.status(400).json({ message: 'Name, password and email are required.' });
+}
+
+// FEATURE 2 - Strong password
+if (password.length < 8) {
+  return res.status(400).json({ message: 'Password must be at least 8 characters.' });
+}
+if (!/[0-9]/.test(password)) {
+  return res.status(400).json({ message: 'Password must contain a number.' });
+}
+
+// FEATURE 3 - Email format
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+if (!emailPattern.test(email)) {
+  return res.status(400).json({ message: 'Email must be a valid email address.' });
+}
   // Basic backend validation protects the API even if a user bypasses the React form.
   if (!name || !email || !password || !role) {
     return res.status(400).json({ message: 'Name, email, password, and role are required' });
